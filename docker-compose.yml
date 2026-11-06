@@ -1,16 +1,22 @@
+
 services:
-  api:
-    build: .
-    restart: unless-stopped
-    env_file: .env
-    ports:
-      - "127.0.0.1:${HTTP_PORT:-9042}:${HTTP_PORT:-9042}"
+  existencias-puerto-service:
+    build:
+      context: .
+
+    container_name: existencias-puerto-service
+
+    env_file:
+      - .env
+
+    environment:
+      ORACLE_HOME: /opt/oracle/instantclient_21_12
+      LD_LIBRARY_PATH: /opt/oracle/instantclient_21_12
+      HTTP_PORT: "9042"
+
+    network_mode: host
+
     volumes:
-      - ${ORACLE_CLIENT_HOST_PATH:-/opt/oracle/instantclient}:/opt/oracle/instantclient:ro
-    security_opt:
-      - no-new-privileges:true
-    cap_drop:
-      - ALL
-    read_only: true
-    tmpfs:
-      - /tmp
+      - /home/jveron/oracle/instantclient_21_12:/opt/oracle/instantclient_21_12:ro
+
+    restart: unless-stopped
