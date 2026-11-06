@@ -9,8 +9,6 @@ import (
 
 	"aca/existencias-puerto/internal/config"
 	"aca/existencias-puerto/internal/domain"
-
-	"github.com/godror/godror"
 )
 
 type Oracle struct {
@@ -21,15 +19,20 @@ type Oracle struct {
 }
 
 func Open(c config.Config) (*Oracle, error) {
-	params := godror.ConnectionParams{
-		CommonParams: godror.CommonParams{
-			ConnectString: c.OracleDSN,
-			Username:      c.OracleUser,
-			Password:      godror.NewPassword(c.OraclePassword),
-		},
-	}
+	dsn := fmt.Sprintf(
+		`user="%s" password="%s" connectString="%s"`,
+		c.OracleUser,
+		c.OraclePassword,
+		c.OracleDSN,
+	)
 
-	db := sql.OpenDB(godror.NewConnector(params))
+	db, err := sql.Open("godror", dsn)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"error opening Oracle connection: %w",
+			err,
+		)
+	}
 
 	db.SetMaxOpenConns(c.MaxOpen)
 	db.SetMaxIdleConns(c.MaxIdle)
