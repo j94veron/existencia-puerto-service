@@ -9,6 +9,8 @@ import (
 
 	"aca/existencias-puerto/internal/config"
 	"aca/existencias-puerto/internal/domain"
+
+	_ "github.com/godror/godror"
 )
 
 type Oracle struct {
