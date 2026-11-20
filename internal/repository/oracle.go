@@ -259,7 +259,7 @@ ORDER BY
 			&existencia,
 		)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("oracle scan failed (mode=%s, origin=%s): %w", r.ConnectionMode, o.Code, err)
 		}
 
 		x.NomGrano = name.String
@@ -273,7 +273,7 @@ ORDER BY
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("oracle rows failed (mode=%s, origin=%s): %w", r.ConnectionMode, o.Code, err)
 	}
 
 	return out, nil
